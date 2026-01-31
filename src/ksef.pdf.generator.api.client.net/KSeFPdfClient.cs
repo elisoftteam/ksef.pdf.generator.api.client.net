@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,36 +7,43 @@ namespace ksef.pdf.generator.api.client.net
 {
   public class KSeFPdfClient
   {
+    private const string InvoicePdfUrlFormat = "{0}/api/invoice/pdf?nrKSeF={1}&qrCode={2}";
+    private const string UpoPdfUrlFormat = "{0}/api/upo/pdf";
+
     private readonly HttpClient _httpClient;
-    private readonly string _baseUrl;
     private readonly string _apiToken;
 
-
-    public KSeFPdfClient(string baseUrl, string apiToken, HttpClient httpClient = null)
+    public KSeFPdfClient(string apiToken, HttpClient httpClient = null)
     {
-      _baseUrl = baseUrl.TrimEnd('/');
       _apiToken = apiToken;
       _httpClient = httpClient ?? new HttpClient();
     }
 
-    public async Task<byte[]> GetInvoicePdfAsync(string xmlContent, string ksefNumber, string qrCode)
+    public async Task<byte[]> GetInvoicePdfAsync(string domain, string xmlContent, string ksefNumber, string qrCode)
     {
+      if (string.IsNullOrWhiteSpace(domain)) throw new ArgumentException(nameof(domain));
       if (string.IsNullOrWhiteSpace(xmlContent)) throw new ArgumentException(nameof(xmlContent));
       if (string.IsNullOrWhiteSpace(ksefNumber)) throw new ArgumentException(nameof(ksefNumber));
       if (string.IsNullOrWhiteSpace(qrCode)) throw new ArgumentException(nameof(qrCode));
 
-      var endpoint = $"/api/invoice/pdf?nrKSeF={Uri.EscapeDataString(ksefNumber)}&qrCode={Uri.EscapeDataString(qrCode)}";
-      var fullUrl = _baseUrl + endpoint;
+      domain = domain.TrimEnd('/');
+
+      var fullUrl = string.Format(InvoicePdfUrlFormat,
+          domain,
+          Uri.EscapeDataString(ksefNumber),
+          Uri.EscapeDataString(qrCode));
 
       return await SendRequestAsync(fullUrl, xmlContent);
     }
 
-    public async Task<byte[]> GetUpoPdfAsync(string xmlContent)
+    public async Task<byte[]> GetUpoPdfAsync(string domain, string xmlContent)
     {
+      if (string.IsNullOrWhiteSpace(domain)) throw new ArgumentException(nameof(domain));
       if (string.IsNullOrWhiteSpace(xmlContent)) throw new ArgumentException(nameof(xmlContent));
 
-      var endpoint = "/api/upo/pdf";
-      var fullUrl = _baseUrl + endpoint;
+      domain = domain.TrimEnd('/');
+
+      var fullUrl = string.Format(UpoPdfUrlFormat, domain);
 
       return await SendRequestAsync(fullUrl, xmlContent);
     }
