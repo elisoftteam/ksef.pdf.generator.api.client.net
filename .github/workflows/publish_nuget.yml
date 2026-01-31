@@ -1,0 +1,30 @@
+name: Publish to NuGet
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: windows-latest # 
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.2
+
+    - name: Restore NuGet packages
+      run: nuget restore src/ksef.pdf.generator.api.client.net/ksef.pdf.generator.api.client.net.csproj
+
+    - name: Build Solution
+      run: msbuild src/ksef.pdf.generator.api.client.net/ksef.pdf.generator.api.client.net.csproj /p:Configuration=Release
+
+    - name: Pack NuGet
+      run: nuget pack src/ksef.pdf.generator.api.client.net/ksef.pdf.generator.api.client.net.csproj -Properties Configuration=Release -OutputDirectory .
+
+    - name: Push to NuGet.org
+      run: nuget push *.nupkg -Source https://api.nuget.org/v3/index.json -ApiKey ${{ secrets.NUGET_API_KEY }} 
