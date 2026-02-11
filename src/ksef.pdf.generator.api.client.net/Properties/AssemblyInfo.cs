@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Ogólne informacje o zestawie są kontrolowane poprzez następujący 
 // zestaw atrybutów. Zmień wartości tych atrybutów, aby zmodyfikować informacje
 // powiązane z zestawem.
-[assembly: AssemblyTitle("ksef.pdf.generator.api.client.net")]
+[assembly: AssemblyTitle("Elisoft.ksef.pdf.generator.api.client.net")]
 [assembly: AssemblyDescription("Elisoft api-pdf-gen client")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Elisoft")]
-[assembly: AssemblyProduct("ksef.pdf.generator.api.client.net")]
+[assembly: AssemblyProduct("Elisoft.ksef.pdf.generator.api.client.net")]
 [assembly: AssemblyCopyright("Copyright ©  2026")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
